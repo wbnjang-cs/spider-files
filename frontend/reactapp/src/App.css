@@ -1,0 +1,23 @@
+.mainPage {
+  background-color: #e0f6fa;
+  width: 100vw;
+  height: 100vh;
+  padding-top: 20vh;
+  display: flex;
+  align-items: center; 
+  flex-direction: column;
+}
+
+.uploadButton, .downloadButton {
+  font-size: 3em;
+  font-family: sans-serif;
+  background-color:#1E3A8A;
+  color: white;
+  margin-top: 15vh;
+  margin-bottom: 15vh;
+  width: 30vw;
+  height: 15vh;
+  outline: 5px solid #3B82F6;
+  border-radius: 15px;
+}
+

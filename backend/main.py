@@ -1,23 +1,41 @@
-from fastapi import FastAPI, UploadFile, Depends
+#uvicorn main:app --reload
+import time
+from pydantic import BaseModel
+from fastapi import FastAPI, UploadFile, Depends, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from pathlib import Path
-from security import Verify_ID
 from typing import Annotated
+from secrets import token_urlsafe
 from utils import (
     SaveAndHashFile,
     UpdateSavePath,
     GetSavePath,
     Check_File_Name_Exists,
-    CreateDirectory
+    CreateDirectory,
+    GetIP,
+    Verify_Token,
+    Start_Pairing,
+    Verify_Code,
+    Add_Token
 )
 
+class PairRequest(BaseModel):
+    code: str
 
 
 #======== Code that runs on startup ==================================================================
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # local-only tool; revisit if cookie-based auth is ever added
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 #====================================================================================================================================
 
 @app.post("/uploadfile/")
-def create_upload_file(userFiles: list[UploadFile], Authentication: Annotated[str, Depends(Verify_ID)], savePath: str=None):
+def create_upload_file(userFiles: list[UploadFile], Authentication: Annotated[str, Depends(Verify_Token)], savePath: str=None):
     uploadedFiles = []
     failedFiles = []
     mainSavePath = GetSavePath()
@@ -66,4 +84,22 @@ def CreateSubDirectory(directoryName: str):
 
     return {"Message" : "subdirectory successfully created"}
 
+@app.post("/pair/start")
+def pair_start():
+    Start_Pairing()
+    return {"status": "pairing window is showing"}
+
+@app.post("/pair")
+def pair(request: PairRequest):
+    if not Verify_Code(request.code):
+        raise HTTPException(status_code=401, detail="Invalid or expired code")
+    newToken = token_urlsafe(32)
+    Add_Token(newToken, time.time())
+    return {"token": newToken}
+
+
+
+#app.
+# @app.get("/setup")
+# def setup():
 
