@@ -1,6 +1,7 @@
 from .utils import (
     SaveAndHashFile,
-    CreateDirectory
+    CreateDirectory,
+    GetAllDrives,
 )
 
 

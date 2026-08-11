@@ -4,6 +4,7 @@ from pathlib import Path
 from .db_utils import Add_File
 import tempfile
 from .config_utils import GetSavePath
+import string
 
 
 
@@ -94,7 +95,7 @@ def SaveAndHashFile(file: UploadFile, savePath: Path) -> bool:
     
 #End of SaveAndHashFile==============================================================================================
 
-def CreateDirectory(dirStr: str) -> Path:
+def CreateDirectory(currDirName: str, newDirName: str) -> Path:
     """
     Name: CheckDirectory
 
@@ -105,22 +106,35 @@ def CreateDirectory(dirStr: str) -> Path:
     Assumptions: No assumptions
 
     Inputs: 
-        dirStr: string of the directory we want to create
+        currDirName: name of directory to make the new directory in
+
+        newDirName: name of the new directory to make
 
     Return value:
         dirPath: Path to directory we created
     """
 
-    dirPath = Path(dirStr)
-    mainSavePath = GetSavePath()
-    dirPath = mainSavePath / dirPath
-    dirPath.mkdir(exist_ok=True, parents=True)
-
-    return dirPath
     
+    currDirPath = Path(currDirName)
+    #Shouldn't be needed but just in case
+    currDirPath.mkdir(exist_ok=True, parents=True)
+    newDirPath = Path(newDirName)
+    newDir = currDirPath / newDirPath 
+    newDir.mkdir(exist_ok=True, parents=True)
+
+    return newDir
+#End of CreateDirectory========================================================
+
+def GetAllDrives():
+    drives = []
+    for letter in string.ascii_uppercase:
+        path = Path(f"{letter}:\\")
+        if path.exists():
+            drives.append(str(path))
+    return drives
+#End of GetAllDrives========================================================
 
     
-
 
 
 

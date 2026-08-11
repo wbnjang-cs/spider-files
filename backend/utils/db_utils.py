@@ -183,5 +183,30 @@ def Is_Valid_Token(token: str) -> bool:
     finally:
         conn.close()
 
-# def GetDBPath():
-#     return FILES_DB_PATH
+def Wipe_Files_Database() -> bool:
+    """
+    Name: Wipe_Files_Database
+
+    Function description: 
+        Deletes all rows from the files table, db matches new savePath uploads
+
+    Inputs: None
+
+    Return value: 
+            True : wipe successful
+
+            False : wipe failed
+    """
+    print("wiping")
+    conn = sqlite3.connect(FILES_DB_PATH)
+    c = conn.cursor()
+    try:
+        c.execute("""DELETE FROM files""")
+        conn.commit()
+        return True
+    except Exception as e:
+        print(f"Error wiping files database: {e}")
+        return False
+    finally:
+        conn.close()
+#End of Wipe_Files_Database ================================

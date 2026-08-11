@@ -5,7 +5,7 @@ from .db_utils import Is_Valid_Token
 import threading, secrets, time, tkinter as tk
 from utils import GetID
 
-API_KEY_SCHEME = APIKeyHeader(name="ID_FOR_VERIFICATION")
+API_KEY_SCHEME = APIKeyHeader(name="TOKEN_FOR_VERIFICATION")
 
 async def Verify_Token(inputedToken : Annotated[str, Depends(API_KEY_SCHEME)]):
     if not Is_Valid_Token(inputedToken):

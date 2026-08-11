@@ -1,15 +1,17 @@
-.mainPage {
-  background-color: #e0f6fa;
-  width: 100vw;
-  height: 100vh;
-  padding-top: 20vh;
-  display: flex;
-  align-items: center; 
-  flex-direction: column;
+.filePage, .menuPage, .configPage {
+    background-color: #e0f6fa;
+    width: 100vw;
+    min-height: 100vh; 
+    padding-top: 20vh;
+    padding-bottom: 5vh; 
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    position: relative;
 }
 
-.uploadButton, .downloadButton {
-  font-size: 3em;
+.uploadButton, .downloadButton, .configButton, .fileButton, .saveDirButton {
+  font-size: clamp(1rem, 4vw, 2em);
   font-family: sans-serif;
   background-color:#1E3A8A;
   color: white;
@@ -21,3 +23,278 @@
   border-radius: 15px;
 }
 
+
+@media (max-width: 600px) {
+  .uploadButton, .downloadButton {
+    width: 80vw;
+    height: 12vh;
+    font-size: clamp(1.5rem, 6vw, 2em);
+    margin-top: 8vh;
+    margin-bottom: 8vh;
+  }
+}
+
+.backButton {
+    font-size: clamp(0.8rem, 2.5vw, 1.2em);
+    font-family: sans-serif;
+    background-color: #1E3A8A;
+    color: white;
+    width: 15vw;
+    height: 6vh;
+    outline: 3px solid #3B82F6;
+    border-radius: 10px;
+    margin-top: 2vh;
+}
+
+.currDirHeader {
+    background-color: #1E3A8A;
+    color: white;
+    text-align: center;
+    margin: 12px auto;
+    padding: 10px 16px;
+    border-radius: 10px;
+    width: fit-content;
+    max-width: 90%;
+    font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+}
+
+.popupOverlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.popup {
+    background: white;
+    padding: 24px 32px;
+    border-radius: 8px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+    text-align: center;
+}
+
+.fileBrowser {
+    background-color: #e0f6fa;
+    color: black;
+    outline: 5px solid #1E3A8A;
+    width: clamp(300px, 90vw, 700px);
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.fileList {
+    max-height: 60vh;
+    overflow-y: auto;
+    border: 1px solid #ccc;
+    padding-right: 6px;
+    box-sizing: border-box;
+}
+
+.fileEntry {
+    position: relative;
+    display: inline-block;
+    width: 110px; 
+}
+
+.fileIcon, .folderIcon {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: none;
+    border: none;
+    cursor: pointer;
+    width: 110px; 
+    padding: 6px;
+}
+
+.fileIcon img , .folderIcon img{
+    width: 48px;
+    height: 48px;
+    pointer-events: none;
+}
+
+.fileIcon span , .folderIcon span{
+    display: block;
+    font-size: 12px;
+    text-align: center;
+    margin-top: 4px;
+    max-width: 110px; 
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.folderIcon:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.selectCheckBox {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    width: 24px;  
+    height: 24px; 
+    z-index: 1;
+    cursor: pointer;
+    accent-color: #1E3A8A;
+}
+
+.returnRow {
+    display: flex;
+    gap: 10px;
+    margin: 8px 0;
+}
+
+.returnButton {
+    background-color: #3B82F6;
+    color: white;
+    font-family: sans-serif;
+    font-size: clamp(0.75rem, 2vw, 0.95rem);
+    border: none;
+    border-radius: 8px;
+    padding: 8px 14px;
+    cursor: pointer;
+    flex: 1;
+}
+
+.returnButton:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.returnButton:hover:not(:disabled) {
+    background-color: #1E3A8A;
+}
+
+.searchBar {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 8px 14px;
+    margin: 8px 0;
+    border: 2px solid #3B82F6;
+    border-radius: 20px;
+    font-family: sans-serif;
+    font-size: clamp(0.85rem, 2vw, 1rem);
+    outline: none;
+}
+
+.searchBar:focus {
+    border-color: #1E3A8A;
+}
+
+.configPage > button:first-child {
+    margin-bottom: 30px;
+}
+
+.saveDirRow {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+}
+
+.selectFolderButton {
+    width: 100%;
+    background-color: #3B82F6;
+    color: white;
+    font-family: sans-serif;
+    font-size: clamp(0.9rem, 2.2vw, 1.1rem);
+    border: none;
+    border-radius: 12px;
+    padding: 14px;
+    cursor: pointer;
+}
+
+.selectFolderButton:hover {
+    background-color: #2563eb;
+}
+
+.selectFolderButton:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.currDirRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 12px 0;
+    padding: 0 12px;
+}
+
+.currDirSpacer {
+    width: 90px; /* roughly matches New Folder button's width — tune to match exactly */
+    flex-shrink: 0;
+}
+
+.currDirHeader {
+    background-color: #1E3A8A;
+    color: white;
+    text-align: center;
+    padding: 10px 16px;
+    border-radius: 10px;
+    width: fit-content;
+    max-width: 60%;
+    font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+    margin: 0 auto;
+}
+
+.MakeNewDirButton {
+    background-color: #2563eb;
+    color: white;
+    font-family: sans-serif;
+    font-size: clamp(0.7rem, 1.8vw, 0.85rem);
+    border: none;
+    border-radius: 10px;
+    padding: 8px 12px;
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.newFolderInput {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px 14px;
+    margin: 12px 0;
+    border: 2px solid #3B82F6;
+    border-radius: 10px;
+    font-family: sans-serif;
+    font-size: 1rem;
+    outline: none;
+}
+
+.newFolderInput:focus {
+    border-color: #1E3A8A;
+}
+
+.popupButtonRow {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.popupConfirmButton {
+    background-color: #1E3A8A;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
+.popupCancelButton {
+    background-color: #ccc;
+    color: black;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 20px;
+    cursor: pointer;
+}

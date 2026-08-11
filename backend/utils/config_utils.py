@@ -2,6 +2,7 @@ import json
 from pathlib import Path
 import uuid
 from fastapi import HTTPException
+from .db_utils import Wipe_Files_Database
 
 
 MAIN_DIR = Path(__file__).parent.parent
@@ -79,6 +80,7 @@ def UpdateSavePath(savePath: Path) ->  None:
 
         2. configPath is incorrect/config.json does not exist
     """
+    global _CONFIG_DATA
     #If the path the user gave does not exist, raise an error
     if not savePath.exists():
         print("UpdateSavePath : That directory does not exist. Try again please.")
@@ -93,6 +95,9 @@ def UpdateSavePath(savePath: Path) ->  None:
                 json.dump(_CONFIG_DATA, f, indent=4)
             
             _CONFIG_DATA = InitializeConfig()
+
+            if not Wipe_Files_Database():
+                raise Exception("Failed to wipe files database after path change")
 
         #If any part of writing to config file fails, raise an error
         except Exception as e:
