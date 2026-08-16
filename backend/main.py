@@ -2,6 +2,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from routers import configR, pairingR, browseR, filesR
+from fastapi.staticfiles import StaticFiles
+from paths import resource_path
 
 app = FastAPI()
 
@@ -16,3 +18,6 @@ app.include_router(filesR.router)
 app.include_router(configR.router)
 app.include_router(pairingR.router)
 app.include_router(browseR.router)
+
+app.mount("/", StaticFiles(directory=resource_path("frontendDist"), html=True), name="static")
+

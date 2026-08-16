@@ -1,8 +1,8 @@
 import json
 from pathlib import Path
-import uuid
 from fastapi import HTTPException
 from .db_utils import Wipe_Files_Database
+import os
 
 
 MAIN_DIR = Path(__file__).parent.parent
@@ -41,7 +41,7 @@ def InitializeConfig() -> dict:
         #set the save path to myDrive/default_uploads
         data = {
             "save path" : str(defaultSavePath),
-            "id" : str(uuid.uuid4())
+            "pairing enabled" : True
         }
         # Creates the config file with the default save path saved at myDrive/config/config.json
         with open(CONFIG_PATH, 'w') as f:
@@ -126,17 +126,33 @@ def GetSavePath() -> Path:
     return Path(_CONFIG_DATA["save path"])
 #End of GetSavePath ========================================================================================================================
 
-def GetID() -> str:
+def SetPairingEnabled(enabled: bool) -> None:
     """
-    Name: GetID
+    Name: SetPairingEnabled
 
     Function description:
-        Will return the ID saved in the config.json folder
-        
-    Return value: 
-        currID: The int that is the unique ID of this program
+        Updates the "pairing enabled" flag in config.json and in memory.
 
+    Inputs:
+        enabled: True to allow pairing requests, False to block them.
+
+    Return value: None
     """
+    global _CONFIG_DATA
+    _CONFIG_DATA["pairing enabled"] = enabled
+    with open(CONFIG_PATH, 'w') as f:
+        json.dump(_CONFIG_DATA, f, indent=4)
+#End of SetPairingEnabled ==================================================================================================
 
-    return _CONFIG_DATA["id"]
-#End of GetSavePath ========================================================================================================================
+def GetPairingEnabled() -> bool:
+    """
+    Name: GetPairingEnabled
+
+    Function description:
+        Returns whether pairing requests are currently allowed.
+
+    Return value:
+        True if pairing is enabled, False if blocked.
+    """
+    return _CONFIG_DATA["pairing enabled"]
+#End of GetPairingEnabled ==================================================================================================

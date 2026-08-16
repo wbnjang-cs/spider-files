@@ -3,7 +3,6 @@ from fastapi import Depends, HTTPException
 from fastapi.security import APIKeyHeader
 from .db_utils import Is_Valid_Token
 import threading, secrets, time, tkinter as tk
-from utils import GetID
 
 API_KEY_SCHEME = APIKeyHeader(name="TOKEN_FOR_VERIFICATION")
 

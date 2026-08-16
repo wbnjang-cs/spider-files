@@ -73,7 +73,7 @@ function FileBrowser({ mode, onCancel, onBack }) {
         return selected.some(e => e.path === path);
     }   
  
-    function handleEntryClick(entry) {
+    function handleClick(entry) {
         if (entry.is_dir) {
             goDown(entry.path);
         } else {
@@ -181,8 +181,8 @@ function FileBrowser({ mode, onCancel, onBack }) {
                         />
                     )}
                     <button 
-                        className={mode === 'download' && entry.is_dir && isSelected(entry.path) ? 'folderIcon' : 'fileIcon'}
-                        onClick={() => handleEntryClick(entry)}
+                        className={mode === 'download' && entry.is_dir ? 'folderIcon' : 'fileIcon'}
+                        onClick={() => handleClick(entry)}
                         disabled={mode === 'download' && entry.is_dir && isSelected(entry.path)}
                         >
                             <img src={entry.is_dir ? FolderIcon : FileIcon} alt="" />

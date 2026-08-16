@@ -9,7 +9,8 @@ from .config_utils import (
     GetSavePath,
     InitializeConfig,
     UpdateSavePath,
-    GetID
+    SetPairingEnabled,
+    GetPairingEnabled
 )
 
 from .db_utils import (
