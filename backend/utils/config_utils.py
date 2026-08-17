@@ -5,7 +5,8 @@ from .db_utils import Wipe_Files_Database
 import os
 
 
-MAIN_DIR = Path(__file__).parent.parent
+MAIN_DIR = Path(os.environ["APPDATA"]) / "myDrive"
+MAIN_DIR.mkdir(exist_ok=True)
 
 CONFIG_DIR = MAIN_DIR / "config"
 CONFIG_DIR.mkdir(exist_ok=True)
@@ -33,10 +34,7 @@ def InitializeConfig() -> dict:
     #If config file doesn't exist inside myDrive/config directory, make a default config file
     if not CONFIG_PATH.exists():
         #Find a path to a directory for default uploads at myDrive/default_uploads
-        defaultSavePath = MAIN_DIR / "default_uploads"
-
-        #Creates myDrive/default_uploads if it doesn't exist
-        defaultSavePath.mkdir(exist_ok=True)
+        defaultSavePath = Path.home() / "Downloads"
 
         #set the save path to myDrive/default_uploads
         data = {

@@ -5,11 +5,16 @@ __pycache__/
 # Virtual Environment
 .venv/
 
-#Data Bases
+# Data Bases
 db/*.db
 
-#Configuration
+# Configuration
 config/config.json
 
-#Uploads
+# Uploads
 default_uploads/
+
+# Build output
+build/
+dist/
+Output/

@@ -9,9 +9,15 @@ from utils import GetPairingEnabled, SetPairingEnabled, GetIP
 import tkinter as tk
 
 def start_server():
-    from main import app  # import the app object directly, not "main:app" as a string
-    import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000, log_level="info")
+    try:
+        from main import app
+        import uvicorn
+        uvicorn.run(app, host="0.0.0.0", port=8000, log_level="info", log_config=None)
+    except Exception as e:
+        import traceback
+        log_path = os.path.join(os.environ["APPDATA"], "myDrive", "crash.log")
+        with open(log_path, "w") as f:
+            f.write(traceback.format_exc())
 
 
 def on_open(icon, item):

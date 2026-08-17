@@ -1,12 +1,13 @@
 import sqlite3
 from pathlib import Path
+import os
 
-#Finds the myDrive main folder
-MAIN_DIR = Path(__file__).parent.parent
-#Finds the myDrive/db directory
+MAIN_DIR = Path(os.environ["APPDATA"]) / "myDrive"
+MAIN_DIR.mkdir(exist_ok=True)
+
 DB_DIR = MAIN_DIR / "db"
 DB_DIR.mkdir(exist_ok=True)
-#Finds the path to the db file located at myDrive/db/files.db
+
 FILES_DB_PATH = DB_DIR / "files.db"
 TOKENS_DB_PATH = DB_DIR / "tokens.db"
 
