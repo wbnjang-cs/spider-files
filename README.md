@@ -1,6 +1,6 @@
-# myDrive
+# Spider Files
 
-myDrive is a self-hosted, local file backup tool for Windows. Once you run it on your PC, you can pair a device that is on the same WiFi network and upload or download files between them.
+Spider Files is a self-hosted, local file backup tool for Windows. Once you run it on your PC, you can pair a device that is on the same WiFi network and upload or download files between them.
 
 # Table of Contents
 
@@ -25,20 +25,20 @@ myDrive is a self-hosted, local file backup tool for Windows. Once you run it on
   
 - **Completely background**: The app runs in the Windows system tray. This combined with a launch on startup option makes it so you rarely have to interact with the app after initial setup.
   
-- **Simple installer**: You can install myDrive with a one-click Windows setup via Inno Setup. No commands or manual configuration required.
+- **Simple installer**: You can install Spider Files with a one-click Windows setup via Inno Setup. No commands or manual configuration required.
 
 # Installation
 
-1. Download myDrive-Setup.exe from the [Releases](https://github.com/wbnjang-cs/myDrive/releases/latest) page
+1. Download SpiderFiles-Setup.exe from the [Releases](https://github.com/wbnjang-cs/spider-file/releases/latest) page
 
 2. Run the installer
 
-3. Launch myDrive
-   - myDrive will launch in the windows tray.
+3. Launch Spider Files
+   - Spider Files will launch in the windows tray.
 
 # Quick Start
 
-1. Right-click the myDrive tray icon and select Show/Copy URL to get your PC's local address
+1. Right-click the Spider Files tray icon and select Show/Copy URL to get your PC's local address
    
 3. On your device (it MUST be on the same WiFi network), open that address in a browser
 
@@ -49,7 +49,7 @@ myDrive is a self-hosted, local file backup tool for Windows. Once you run it on
 
 # How It Works
 
-- Your PC runs myDrive in the background (It will be a tray icon)
+- Your PC runs Spider Files in the background (It will be a tray icon)
   
 - Any device on the same WiFi network can open that website in a browser, with no app install required on the client side.
   
@@ -87,7 +87,7 @@ myDrive is a self-hosted, local file backup tool for Windows. Once you run it on
 
 ## Storage
 
-- Config and databases are stored in %APPDATA%\myDrive, so they persist correctly once installed to Program Files
+- Config and databases are stored in %APPDATA%\Spider Files, so they persist correctly once installed to Program Files
   
 - Default save path is the user's Downloads folder, but can be changed by the user any time
 
