@@ -29,7 +29,7 @@ myDrive is a self-hosted, local file backup tool for Windows. Once you run it on
 
 # Installation
 
-1. Download myDrive-Setup.exe from the Releases page
+1. Download myDrive-Setup.exe from the [Releases](https://github.com/wbnjang-cs/myDrive/releases/latest) page
 
 2. Run the installer
 
