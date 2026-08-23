@@ -1,4 +1,4 @@
-# Spider Files
+# Spider Files *(Formerly myDrive)*
 
 Spider Files is a self-hosted, local file backup tool for Windows. Once you run it on your PC, you can pair a device that is on the same WiFi network and upload or download files between them.
 
