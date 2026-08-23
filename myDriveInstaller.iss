@@ -1,18 +1,19 @@
 [Setup]
-AppId={{FFBECB02-98EE-4060-86A6-ADACBA93D357}}
-AppName=myDrive
+AppId={{5FAC8F2D-2A8D-4904-B882-E770C8B05E7D}}
+AppName=Spider File
 AppVersion=1.0
-DefaultDirName={autopf}\myDrive
-DefaultGroupName=myDrive
-OutputBaseFilename=myDrive-Setup
+DefaultDirName={autopf}\SpiderFile
+DefaultGroupName=Spider File
+OutputBaseFilename=SpiderFile-Setup
 Compression=lzma
 SolidCompression=yes
+SetupIconFile=backend\spider_file_icon_web.ico
 [Files]
-Source: "backend\dist\myDrive\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "backend\dist\SpiderFile\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 [Icons]
-Name: "{group}\myDrive"; Filename: "{app}\myDrive.exe"
-Name: "{autodesktop}\myDrive"; Filename: "{app}\myDrive.exe"; Tasks: desktopicon
-Name: "{userstartup}\myDrive"; Filename: "{app}\myDrive.exe"; Tasks: startupicon
+Name: "{group}\Spider File"; Filename: "{app}\SpiderFile.exe"
+Name: "{autodesktop}\Spider File"; Filename: "{app}\SpiderFile.exe"; Tasks: desktopicon
+Name: "{userstartup}\Spider File"; Filename: "{app}\SpiderFile.exe"; Tasks: startupicon
 [Tasks]
 Name: "desktopicon"; Description: "Create a desktop shortcut"; GroupDescription: "Additional icons:"
-Name: "startupicon"; Description: "Run myDrive when Windows starts"; GroupDescription: "Additional icons:"; Flags: unchecked
+Name: "startupicon"; Description: "Run Spider File when Windows starts"; GroupDescription: "Additional icons:"; Flags: unchecked

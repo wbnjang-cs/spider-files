@@ -57,7 +57,7 @@ def on_show_url(icon, item):
 
 def build_menu():
     return pystray.Menu(
-        pystray.MenuItem("Open Spider Files", on_open),
+        pystray.MenuItem("Open Spider", on_open),
         pystray.MenuItem("Show/Copy URL", on_show_url),
         pystray.MenuItem("Pairing Enabled", toggle_pairing, checked=pairing_checked),
         pystray.MenuItem("Quit", on_quit),
