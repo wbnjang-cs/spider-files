@@ -5,7 +5,7 @@ from .db_utils import Wipe_Files_Database
 import os
 
 
-MAIN_DIR = Path(os.environ["APPDATA"]) / "myDrive"
+MAIN_DIR = Path(os.environ["APPDATA"]) / "Spider Files"
 MAIN_DIR.mkdir(exist_ok=True)
 
 CONFIG_DIR = MAIN_DIR / "config"

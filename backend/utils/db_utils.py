@@ -2,7 +2,7 @@ import sqlite3
 from pathlib import Path
 import os
 
-MAIN_DIR = Path(os.environ["APPDATA"]) / "myDrive"
+MAIN_DIR = Path(os.environ["APPDATA"]) / "Spider Files"
 MAIN_DIR.mkdir(exist_ok=True)
 
 DB_DIR = MAIN_DIR / "db"
