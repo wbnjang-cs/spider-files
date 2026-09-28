@@ -34,7 +34,7 @@ def create_upload_file(userFiles: list[UploadFile], Authentication: Annotated[st
         fileName = file.filename
     
         #Quick Check if file with same name exists. If it does, don't save file and return
-        if Check_File_Name_Exists(fileName):
+        if Check_File_Name_Exists(fileName, str(GetSavePath())):
             fileName = fileName + "(File with identical name already exists)"
             failedFiles.append(fileName)
             continue

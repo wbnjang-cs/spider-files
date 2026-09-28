@@ -68,7 +68,7 @@ def SaveAndHashFile(file: UploadFile, savePath: Path) -> bool:
         fileByteHash = fileHasher.hexdigest()
 
         #If file is succesfully added to DB, make real file point to temp file
-        if Add_File(file.filename, fileByteHash):
+        if Add_File(str(GetSavePath()), file.filename, fileByteHash):
             Path(tempName).replace(savePath)
             return True
 

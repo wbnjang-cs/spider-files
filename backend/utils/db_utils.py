@@ -11,6 +11,34 @@ DB_DIR.mkdir(exist_ok=True)
 FILES_DB_PATH = DB_DIR / "files.db"
 TOKENS_DB_PATH = DB_DIR / "tokens.db"
 
+def CleanDB():
+    """
+    Name: CleanDB
+
+    Function description:
+        Go through DB and remove files that nolonger exists.
+
+    Inputs: None
+
+    Return value: None
+    """
+    conn = sqlite3.connect(FILES_DB_PATH)
+    c = conn.cursor()
+
+    c.execute("SELECT fileLocation, fileName FROM files")
+    rows = c.fetchall()
+
+    for fileLocation, fileName in rows:
+        fullPath = Path(fileLocation) / fileName
+        if not fullPath.exists():
+            c.execute(
+                "DELETE FROM files WHERE fileLocation = ? AND fileName = ?",
+                (fileLocation, fileName)
+            )
+
+    conn.commit()
+    conn.close()
+#End of CleanDB ===============================================
 
 def Initialize_Files_Database():
     """
@@ -24,6 +52,7 @@ def Initialize_Files_Database():
 
     Return value: None
     """
+    dbExists = FILES_DB_PATH.exists()
     #connect to the db file. If db file doesn't exist, make a new db file with a new table
     conn = sqlite3.connect(FILES_DB_PATH)
 
@@ -31,15 +60,20 @@ def Initialize_Files_Database():
 
     c.execute("""CREATE TABLE IF NOT EXISTS files (
             id INTEGER PRIMARY KEY,
+            fileLocation TEXT NOT NULL,
             fileName TEXT NOT NULL UNIQUE,
             fileHash TEXT NOT NULL UNIQUE
             )""")
 
     conn.commit()
     conn.close()
+
+    if dbExists:
+        CleanDB()
 #End of Initialize_Database ========================================================================================================================================
 
 Initialize_Files_Database()
+
 
 #End of Initialize_Files_Database ========================================================================================================================================
 
@@ -71,7 +105,7 @@ def Initialize_Tokens_Database():
 Initialize_Tokens_Database()
 
 
-def Add_File(fileName: str, fileHash: str) -> bool:
+def Add_File(fileLocation: str, fileName: str, fileHash: str) -> bool:
     """
     Name: Add_File
 
@@ -96,9 +130,9 @@ def Add_File(fileName: str, fileHash: str) -> bool:
     conn = sqlite3.connect(FILES_DB_PATH)
     c = conn.cursor()
     try:
-        c.execute("""INSERT INTO files (fileName, fileHash) 
-                    VALUES (?, ?) """,
-                    (fileName, fileHash))
+        c.execute("""INSERT OR REPLACE INTO files (fileLocation, fileName, fileHash) 
+                    VALUES (?, ?, ?) """,
+                    (fileLocation, fileName, fileHash))
     
         conn.commit()
         return True
@@ -115,7 +149,7 @@ def Add_File(fileName: str, fileHash: str) -> bool:
 
 
 
-def Check_File_Name_Exists(fileName: str) -> bool:
+def Check_File_Name_Exists(fileName: str, fileLocation: str) -> bool:
     """
     Name: Check_File_Name_Exists
 
@@ -136,8 +170,8 @@ def Check_File_Name_Exists(fileName: str) -> bool:
     c = conn.cursor()
 
     try:
-        c.execute("""SELECT 1 FROM files WHERE fileName=? """,
-                  (fileName,))
+        c.execute("""SELECT 1 FROM files WHERE fileName=? AND fileLocation=?""",
+                  (fileName, fileLocation))
         
         if c.fetchone() == None:
         
@@ -211,3 +245,4 @@ def Wipe_Files_Database() -> bool:
     finally:
         conn.close()
 #End of Wipe_Files_Database ================================
+

@@ -1,7 +1,7 @@
 [Setup]
 AppId={{5FAC8F2D-2A8D-4904-B882-E770C8B05E7D}}
 AppName=Spider File
-AppVersion=1.0
+AppVersion=1.1
 DefaultDirName={autopf}\SpiderFile
 DefaultGroupName=Spider File
 OutputBaseFilename=SpiderFile-Setup
