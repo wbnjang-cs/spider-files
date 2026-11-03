@@ -29,7 +29,7 @@ Spider Files is a self-hosted, local file backup tool for Windows. Once you run 
 
 # Installation
 
-1. Download SpiderFiles-Setup.exe from the [Releases](https://github.com/wbnjang-cs/spider-file/releases/latest) page
+1. Download SpiderFiles-Setup.exe from the [Releases](https://github.com/wbnjang-cs/spider-files/releases/latest) page
 
 2. Run the installer
 
