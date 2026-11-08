@@ -30,7 +30,7 @@ def CleanDB():
 
     for fileLocation, fileName in rows:
         fullPath = Path(fileLocation) / fileName
-        if not fullPath.exists():
+        if not fileLocation or not fullPath.exists():
             c.execute(
                 "DELETE FROM files WHERE fileLocation = ? AND fileName = ?",
                 (fileLocation, fileName)
@@ -65,6 +65,12 @@ def Initialize_Files_Database():
             fileHash TEXT NOT NULL UNIQUE
             )""")
 
+    c.execute("PRAGMA table_info(files)")
+    rows = c.fetchall()
+    columnNames = [r[1] for r in rows]
+    if "fileLocation" not in columnNames:
+        c.execute("ALTER TABLE files ADD COLUMN fileLocation TEXT NOT NULL DEFAULT ''")
+
     conn.commit()
     conn.close()
 
@@ -95,8 +101,15 @@ def Initialize_Tokens_Database():
 
     c.execute("""CREATE TABLE IF NOT EXISTS tokens (
             token TEXT PRIMARY KEY,
-            pairedTime REAL NOT NULL
+            pairedTime REAL NOT NULL,
+            deviceName TEXT NOT NULL DEFAULT 'Unnamed device'
             )""")
+
+    c.execute("PRAGMA table_info(tokens)")
+    rows = c.fetchall()
+    columnNames = [r[1] for r in rows]
+    if "deviceName" not in columnNames:
+        c.execute("ALTER TABLE tokens ADD COLUMN deviceName TEXT NOT NULL DEFAULT 'Unnamed device'")
 
     conn.commit()
     conn.close()
@@ -218,31 +231,15 @@ def Is_Valid_Token(token: str) -> bool:
     finally:
         conn.close()
 
-def Wipe_Files_Database() -> bool:
-    """
-    Name: Wipe_Files_Database
-
-    Function description: 
-        Deletes all rows from the files table, db matches new savePath uploads
-
-    Inputs: None
-
-    Return value: 
-            True : wipe successful
-
-            False : wipe failed
-    """
-    print("wiping")
-    conn = sqlite3.connect(FILES_DB_PATH)
+def Set_Name(token: str, deviceName: str) -> bool:
+    conn = sqlite3.connect(TOKENS_DB_PATH)
     c = conn.cursor()
     try:
-        c.execute("""DELETE FROM files""")
+        c.execute("UPDATE tokens SET deviceName = ? WHERE token = ?", (deviceName, token))
         conn.commit()
-        return True
+        return c.rowcount == 1
     except Exception as e:
-        print(f"Error wiping files database: {e}")
+        print(f"Failed to set name: {e}")
         return False
     finally:
         conn.close()
-#End of Wipe_Files_Database ================================
-

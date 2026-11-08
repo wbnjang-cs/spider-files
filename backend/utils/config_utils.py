@@ -1,7 +1,6 @@
 import json
 from pathlib import Path
 from fastapi import HTTPException
-from .db_utils import Wipe_Files_Database
 import os
 
 
@@ -93,9 +92,6 @@ def UpdateSavePath(savePath: Path) ->  None:
                 json.dump(_CONFIG_DATA, f, indent=4)
             
             _CONFIG_DATA = InitializeConfig()
-
-            if not Wipe_Files_Database():
-                raise Exception("Failed to wipe files database after path change")
 
         #If any part of writing to config file fails, raise an error
         except Exception as e:
