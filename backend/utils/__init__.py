@@ -17,7 +17,9 @@ from .db_utils import (
     Add_File,
     Check_File_Name_Exists,
     Add_Token,
-    Set_Name
+    Set_Name,
+    Get_Devices,
+    Delete_Devices
     
 )
 

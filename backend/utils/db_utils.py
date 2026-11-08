@@ -243,3 +243,38 @@ def Set_Name(token: str, deviceName: str) -> bool:
         return False
     finally:
         conn.close()
+
+def Get_Devices(current_token: str) -> list[dict]:
+    conn = sqlite3.connect(TOKENS_DB_PATH)
+    try:
+        rows = conn.execute(
+            "SELECT rowid, deviceName, pairedTime, (token = ?) "
+            "FROM tokens ORDER BY pairedTime DESC",
+            (current_token,),
+        ).fetchall()
+        return [
+            {
+                "id": row[0],
+                "deviceName": row[1],
+                "pairedTime": row[2],
+                "isCurrent": bool(row[3]),
+            }
+            for row in rows
+        ]
+    finally:
+        conn.close()
+
+def Delete_Devices(ids: list[int]):
+    conn = sqlite3.connect(TOKENS_DB_PATH)
+    ids = set(ids)
+    try:
+        c = conn.cursor()
+        c.executemany(
+            "DELETE FROM tokens WHERE rowid = ?",
+            [(i,) for i in ids],
+        )
+        conn.commit()
+
+        return c.rowcount
+    finally:
+        conn.close()
