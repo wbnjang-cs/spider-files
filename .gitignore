@@ -6,10 +6,10 @@ __pycache__/
 .venv/
 
 # Data Bases
-db/*.db
+**/db/*.db
 
 # Configuration
-config/config.json
+**/config/config.json
 
 # Uploads
 default_uploads/
