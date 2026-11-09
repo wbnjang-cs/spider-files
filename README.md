@@ -10,6 +10,7 @@ Spider Files is a self-hosted, local file backup tool for Windows. Once you run 
 4. [How It Works](#how-it-works)
 5. [Tech Stack](#tech-stack)
 6. [Architecture](#architecture)
+7. [Known Bugs](#known-bugs)
 
 # Features
 
@@ -96,3 +97,7 @@ Spider Files is a self-hosted, local file backup tool for Windows. Once you run 
 - The React frontend is built to static files and mounted directly by FastAPI, so the whole app runs as a single process on a single port
   
 - The server binds to 0.0.0.0 so it's reachable from any device on the LAN, with CORS enabled for cross-origin requests from the phone's browser
+
+## Known Bugs
+
+- Brave browser on mobile will not allow connection to application
