@@ -5,6 +5,14 @@ from routers import configR, pairingR, browseR, filesR, devicesR
 from fastapi.staticfiles import StaticFiles
 from paths import resource_path
 
+class NoCacheHtmlStaticFiles(StaticFiles):
+    async def get_response(self, path, scope):
+        response = await super().get_response(path, scope)
+        if response.headers.get("content-type", "").startswith("text/html"):
+            response.headers["Cache-Control"] = "no-cache"
+        return response
+
+
 app = FastAPI()
 
 app.add_middleware(
@@ -20,5 +28,5 @@ app.include_router(pairingR.router)
 app.include_router(browseR.router)
 app.include_router(devicesR.router)
 
-app.mount("/", StaticFiles(directory=resource_path("frontendDist"), html=True), name="static")
+app.mount("/", NoCacheHtmlStaticFiles(directory=resource_path("frontendDist"), html=True), name="static")
 
