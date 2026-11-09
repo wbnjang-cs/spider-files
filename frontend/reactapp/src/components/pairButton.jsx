@@ -14,7 +14,7 @@ function PairButton({ onPaired }) {
   }
 
   return (
-    <button onClick={startPairing}>Pair Device</button>
+    <button className="uploadButton" onClick={startPairing}>Pair Device</button>
   );
 }
 

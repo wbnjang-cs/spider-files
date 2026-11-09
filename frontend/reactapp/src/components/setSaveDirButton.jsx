@@ -39,7 +39,7 @@ function SetSaveDirButton({path, onBack}) {
     return (
         <div>
             <button  className="selectFolderButton"  onClick={handleSetSavePath} disabled={submitting}>
-                {submitting ? 'Setting...' : 'Select Current Directory'}
+                {submitting ? 'Setting...' : 'Select Upload Directory'}
             </button>
 
             {popup}

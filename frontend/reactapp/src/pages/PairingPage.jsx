@@ -26,20 +26,23 @@ function PairingPage({ onTokenReceived }) {
   }
 
   return (
-    <div className="pairingPage">
+    <div className="configPage pairingPage">
       {!awaitingCode ? (
         <PairButton onPaired={() => setAwaitingCode(true)} />
       ) : (
-        <form onSubmit={submitCode}>
+        <form className="fileBrowser pairForm" onSubmit={submitCode}>
           <p>Enter the code shown on the server screen:</p>
           <input
+            className="newFolderInput"
             type="text"
+            inputMode="numeric"
+            autoComplete="one-time-code"
             value={code}
             onChange={(e) => setCode(e.target.value)}
             maxLength={6}
             autoFocus
           />
-          <button type="submit">Submit</button>
+          <button className="selectFolderButton" type="submit">Submit</button>
         </form>
       )}
       {error && <p className="error">{error}</p>}

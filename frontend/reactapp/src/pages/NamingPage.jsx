@@ -26,23 +26,35 @@ function NamingPage({onNameSet}) {
         }
     }
 
-    return <div>
-        <form onSubmit={submitName}>
-            <p>Input this devices name</p>
-            <input
-            type="text"
-            value={deviceName}
-            onChange={(e) => setDeviceName(e.target.value)}
-            maxLength={40}
-            autoFocus
-            />
-
-            {error && <p className="error">{error}</p>}
-            <button type="submit">Save</button>
-        </form>
-
-        <button type="button" onClick={() => onNameSet('Unnamed device')}>Skip</button>
-    </div>
+    return (
+        <div className="configPage pairingPage">
+            <form className="fileBrowser pairForm" onSubmit={submitName}>
+                <p>Input this device's name</p>
+                <input
+                    className="newFolderInput nameInput"
+                    type="text"
+                    value={deviceName}
+                    onChange={(e) => setDeviceName(e.target.value)}
+                    maxLength={40}
+                    autoFocus
+                />
+ 
+                {error && <p className="error">{error}</p>}
+ 
+                <div className="popupButtonRow">
+                    <button
+                        className="popupCancelButton"
+                        type="button"
+                        onClick={() => onNameSet('Unnamed device')}
+                    >
+                        Skip
+                    </button>
+                    <button className="popupConfirmButton" type="submit">Save</button>
+                </div>
+            </form>
+        </div>
+    );
 }
+
 
 export default NamingPage;

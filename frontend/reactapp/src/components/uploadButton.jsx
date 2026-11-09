@@ -1,10 +1,29 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect} from 'react';
 import {API_BASE} from '../utils/api'
 
 function UploadButton() {
   const fileInputRef = useRef(null);
   const [uploadResult, setUploadResult] = useState(null);
   const [showPopup, setShowPopup] = useState(false);
+  const [saveDir, setSaveDir] = useState(null);
+
+  useEffect(() => {
+    async function loadSaveDir() {
+      const response = await fetch(`${API_BASE}/config/getPath`, {
+        headers: { 'TOKEN_FOR_VERIFICATION': localStorage.getItem('deviceToken') },
+      });
+      if (response.status === 401) {
+        localStorage.removeItem('deviceToken');
+        window.location.reload();
+        return;
+      }
+      if (!response.ok) return;
+      const data = await response.json();
+      setSaveDir(data.savePath);
+    }
+    loadSaveDir();
+  }, []);
+
 
   function handleClick() {
     fileInputRef.current.click();
@@ -46,6 +65,7 @@ function UploadButton() {
 
   return (
     <>
+      {saveDir && <div className="currDirHeader saveDirText">Saving to: {saveDir}</div>}
       <button className="uploadButton" onClick={handleClick}>
         Upload File
       </button>
@@ -56,12 +76,12 @@ function UploadButton() {
         style={{ display: 'none' }}
         onChange={handleFilesChosen}
       />
-
+ 
       {showPopup && uploadResult && (
         <div className="PopupOverlay" onClick={() => setShowPopup(false)}>
           <div className="PopupBox" onClick={(e) => e.stopPropagation()}>
             <h3>{uploadResult.Message}</h3>
-
+ 
             {uploadResult.Successfull_Uploads?.length > 0 && (
               <>
                 <p>Successful uploads:</p>
@@ -72,7 +92,7 @@ function UploadButton() {
                 </ul>
               </>
             )}
-
+ 
             {uploadResult.Failed_Uploads?.length > 0 && (
               <>
                 <p>Failed files:</p>
@@ -83,7 +103,7 @@ function UploadButton() {
                 </ul>
               </>
             )}
-
+ 
             <button onClick={() => setShowPopup(false)}>Close</button>
           </div>
         </div>
@@ -91,5 +111,6 @@ function UploadButton() {
     </>
   );
 }
+
 
 export default UploadButton;
