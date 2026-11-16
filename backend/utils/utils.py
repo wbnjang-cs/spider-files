@@ -7,10 +7,22 @@ from .config_utils import GetSavePath
 import string
 
 
+def SafeFileName(name: str):
+    # treat both slash styles the same, then keep only the last piece
+    cleaned = Path(name.replace("\\", "/")).name
+    if cleaned in ("", ".", "..") or ":" in cleaned:
+        raise ValueError("Invalid file name")
+    return cleaned
 
 
+def ResolveUploadDir(baseDir: Path, subPath: str | None):
+    base = baseDir.resolve()
+    target = base if not subPath else (base / subPath).resolve()
+    if not target.is_relative_to(base):
+        raise ValueError("Path escapes save directory")
+    return target
 
-def SaveAndHashFile(file: UploadFile, savePath: Path) -> bool:
+def SaveAndHashFile(file: UploadFile, savePath: Path, fileName: str) -> bool:
     """
     Name: SaveAndHashFile
 
@@ -41,7 +53,7 @@ def SaveAndHashFile(file: UploadFile, savePath: Path) -> bool:
     tempName = None
 
     saveDir = savePath
-    savePath = saveDir / file.filename
+    savePath = saveDir / fileName
 
     try:
         #Sha256 object that takes in mbs and hashes them
@@ -69,7 +81,7 @@ def SaveAndHashFile(file: UploadFile, savePath: Path) -> bool:
         fileByteHash = fileHasher.hexdigest()
 
         #If file is succesfully added to DB, make real file point to temp file
-        if Add_File(str(saveDir), file.filename, fileByteHash):
+        if Add_File(str(saveDir), fileName, fileByteHash):
             Path(tempName).replace(savePath)
             return True
 

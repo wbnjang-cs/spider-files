@@ -3,6 +3,7 @@ from fastapi import Depends, HTTPException
 from fastapi.security import APIKeyHeader
 from .db_utils import Is_Valid_Token
 import threading, secrets, time, tkinter as tk
+from .config_utils import SetPairingEnabled
 
 API_KEY_SCHEME = APIKeyHeader(name="TOKEN_FOR_VERIFICATION")
 
@@ -24,19 +25,54 @@ def Show_Popup(code: str):
 VALID_CODE = {"code": None, "expires_at": 0.0}
 CODE_VALID_FOR_SECONDS = 180
 
-def Start_Pairing():
-    code = f"{secrets.randbelow(1_000_000):06d}"
+MAX_WRONG_GUESSES = 5
+LOCKOUT_SECONDS = 60
+START_SPAM_LIMIT = 5
+START_SPAM_WINDOW_SECONDS = 10
+START_TIMES = []
+GUESS_STATE = {"wrong": 0, "locked_until": 0.0}
+STATE_LOCK = threading.Lock()
 
-    VALID_CODE["code"] = code
-    VALID_CODE["expires_at"] = time.time() + CODE_VALID_FOR_SECONDS
-    threading.Thread(target=Show_Popup, args=(code,), daemon=True).start()
+def Start_Pairing():
+    with STATE_LOCK:
+        now = time.time()
+        START_TIMES[:] = [t for t in START_TIMES if t + START_SPAM_WINDOW_SECONDS > now]
+        START_TIMES.append(now)
+
+        if len(START_TIMES) > START_SPAM_LIMIT:
+            SetPairingEnabled(False)
+            VALID_CODE["code"] = None
+            START_TIMES.clear()
+            raise HTTPException(status_code=403, detail="Pairing was turned off after too many requests. You can reenable pairing through the tray app.")
+
+        code = f"{secrets.randbelow(1_000_000):06d}"
+
+        VALID_CODE["code"] = code
+        VALID_CODE["expires_at"] = time.time() + CODE_VALID_FOR_SECONDS
+        threading.Thread(target=Show_Popup, args=(code,), daemon=True).start()
 
 def Verify_Code(submitted: str) -> bool:
-    code = VALID_CODE["code"]
-    valid = code is not None and time.time() < VALID_CODE["expires_at"] and secrets.compare_digest(code, submitted)
-    if valid:
-        VALID_CODE["code"] = None
+    with STATE_LOCK:
+        now = time.time()
+
+        if now < GUESS_STATE["locked_until"]:
+            raise HTTPException(
+                status_code=429,
+                detail="Too many wrong guesses. Try again later.",
+                headers={"Retry-After": str(LOCKOUT_SECONDS)},
+            )
+        
+        code = VALID_CODE["code"]
+        valid = code is not None and time.time() < VALID_CODE["expires_at"] and secrets.compare_digest(code.encode(), submitted.encode())
+        if valid:
+            VALID_CODE["code"] = None
+            GUESS_STATE["wrong"] = 0
+        else:
+            GUESS_STATE["wrong"] += 1
+            if GUESS_STATE["wrong"] >= MAX_WRONG_GUESSES:
+                GUESS_STATE["locked_until"] = now + LOCKOUT_SECONDS
+                GUESS_STATE["wrong"] = 0
         
 
-    return valid
+        return valid
 

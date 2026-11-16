@@ -10,6 +10,8 @@ from utils import (
     GetSavePath,
     Check_File_Name_Exists,
     Verify_Token,
+    SafeFileName,
+    ResolveUploadDir
 )
 
 
@@ -25,13 +27,17 @@ def create_upload_file(userFiles: list[UploadFile], Authentication: Annotated[st
     failedFiles = []
     mainSavePath = GetSavePath()
     
-    if savePath is None:
-        savePath = mainSavePath
-    else:
-        savePath = mainSavePath / Path(savePath)
+    try:
+        savePath = ResolveUploadDir(mainSavePath, savePath)
+    except ValueError:
+        raise HTTPException(status_code=400, detail="Invalid save path")
 
     for file in userFiles:
-        fileName = file.filename
+        try:
+            fileName = SafeFileName(file.filename)
+        except ValueError:
+            failedFiles.append(f"{file.filename}(Invalid file name)")
+            continue
     
         #Quick Check if file with same name exists. If it does, don't save file and return
         if Check_File_Name_Exists(fileName, str(savePath)):
@@ -40,7 +46,7 @@ def create_upload_file(userFiles: list[UploadFile], Authentication: Annotated[st
             continue
 
         #Check if file successfully saves
-        if SaveAndHashFile(file, savePath):
+        if SaveAndHashFile(file, savePath, fileName):
             uploadedFiles.append(fileName)
         else:
             fileName = fileName + "(File with identical content already saved)"
