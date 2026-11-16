@@ -40,6 +40,55 @@ def CleanDB():
     conn.close()
 #End of CleanDB ===============================================
 
+FILES_COLUMNS = ["id", "fileLocation", "fileName", "fileHash"]   # the columns the table must have
+FILES_DEFAULTS = {"fileLocation": "''"}                           # value for old rows when a table lacks that column
+
+FILES_TABLE_SQL = """CREATE TABLE IF NOT EXISTS {name} (
+        id INTEGER PRIMARY KEY,
+        fileLocation TEXT NOT NULL,
+        fileName TEXT NOT NULL,
+        fileHash TEXT NOT NULL UNIQUE,
+        UNIQUE (fileLocation, fileName)
+        )"""
+
+
+def Update_Files_Table(conn: sqlite3.Connection) -> None:
+    row = conn.execute(
+        "SELECT sql FROM sqlite_master WHERE type='table' AND name='files'"
+    ).fetchone()
+    if row is None:
+        return
+
+    currentColumns = [r[1] for r in conn.execute("PRAGMA table_info(files)")]
+
+    if set(currentColumns) == set(FILES_COLUMNS) and "UNIQUE (fileLocation, fileName)" in row[0]:
+        return
+
+    selectParts = []
+    for col in FILES_COLUMNS:
+        if col in currentColumns:
+            selectParts.append(col)
+        elif col in FILES_DEFAULTS:
+            selectParts.append(FILES_DEFAULTS[col])
+        else:
+            selectParts = None
+            print(f"files table is missing '{col}' and it has no default, starting with an empty table")
+            break
+
+    try:
+        conn.execute("BEGIN")
+        conn.execute("DROP TABLE IF EXISTS files_new")
+        conn.execute(FILES_TABLE_SQL.format(name="files_new"))
+        if selectParts is not None:
+            conn.execute(f"INSERT OR IGNORE INTO files_new ({', '.join(FILES_COLUMNS)}) "
+                         f"SELECT {', '.join(selectParts)} FROM files")
+        conn.execute("DROP TABLE files")
+        conn.execute("ALTER TABLE files_new RENAME TO files")
+        conn.commit()
+    except Exception:
+        conn.rollback()
+        raise
+
 def Initialize_Files_Database():
     """
     Name: Initialize_Files_Database
@@ -53,25 +102,11 @@ def Initialize_Files_Database():
     Return value: None
     """
     dbExists = FILES_DB_PATH.exists()
-    #connect to the db file. If db file doesn't exist, make a new db file with a new table
     conn = sqlite3.connect(FILES_DB_PATH)
 
-    c = conn.cursor()
-
-    c.execute("""CREATE TABLE IF NOT EXISTS files (
-            id INTEGER PRIMARY KEY,
-            fileLocation TEXT NOT NULL,
-            fileName TEXT NOT NULL UNIQUE,
-            fileHash TEXT NOT NULL UNIQUE
-            )""")
-
-    c.execute("PRAGMA table_info(files)")
-    rows = c.fetchall()
-    columnNames = [r[1] for r in rows]
-    if "fileLocation" not in columnNames:
-        c.execute("ALTER TABLE files ADD COLUMN fileLocation TEXT NOT NULL DEFAULT ''")
-
+    conn.execute(FILES_TABLE_SQL.format(name="files"))
     conn.commit()
+    Update_Files_Table(conn)
     conn.close()
 
     if dbExists:
@@ -143,7 +178,7 @@ def Add_File(fileLocation: str, fileName: str, fileHash: str) -> bool:
     conn = sqlite3.connect(FILES_DB_PATH)
     c = conn.cursor()
     try:
-        c.execute("""INSERT OR REPLACE INTO files (fileLocation, fileName, fileHash) 
+        c.execute("""INSERT INTO files (fileLocation, fileName, fileHash) 
                     VALUES (?, ?, ?) """,
                     (fileLocation, fileName, fileHash))
     

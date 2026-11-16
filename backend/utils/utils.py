@@ -40,7 +40,8 @@ def SaveAndHashFile(file: UploadFile, savePath: Path) -> bool:
     readAmount = 4
     tempName = None
 
-    savePath = savePath / file.filename
+    saveDir = savePath
+    savePath = saveDir / file.filename
 
     try:
         #Sha256 object that takes in mbs and hashes them
@@ -68,7 +69,7 @@ def SaveAndHashFile(file: UploadFile, savePath: Path) -> bool:
         fileByteHash = fileHasher.hexdigest()
 
         #If file is succesfully added to DB, make real file point to temp file
-        if Add_File(str(GetSavePath()), file.filename, fileByteHash):
+        if Add_File(str(saveDir), file.filename, fileByteHash):
             Path(tempName).replace(savePath)
             return True
 
