@@ -28,8 +28,8 @@ Name: "startupicon"; Description: "Run Spider File when Windows starts"; GroupDe
 [Run]
 ; Remove any old copy of our rule first so upgrades don't pile up duplicates, then add it fresh.
 Filename: "{sys}\netsh.exe"; Parameters: "advfirewall firewall delete rule name=""Spider File"""; Flags: runhidden
-; Private networks only (home Wi-Fi). Change profile=private to profile=private,public to also allow Public networks.
-Filename: "{sys}\netsh.exe"; Parameters: "advfirewall firewall add rule name=""Spider File"" dir=in action=allow program=""{app}\SpiderFile.exe"" enable=yes profile=private"; Flags: runhidden
+; Allow on any network profile (Domain, Private and Public), so it works whatever the PC's WiFi is set to.
+Filename: "{sys}\netsh.exe"; Parameters: "advfirewall firewall add rule name=""Spider File"" dir=in action=allow program=""{app}\SpiderFile.exe"" enable=yes profile=any"; Flags: runhidden
 ; Offer to launch after install, as the normal user (so %APPDATA% is the user's, not the admin's).
 Filename: "{app}\SpiderFile.exe"; Description: "Launch Spider File"; Flags: nowait postinstall skipifsilent runasoriginaluser
 

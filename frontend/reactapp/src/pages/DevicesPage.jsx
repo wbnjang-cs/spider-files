@@ -4,6 +4,7 @@ import { useState, useEffect} from "react";
 function DevicesPage({onBack}) {
     const [devices, setDevices] = useState([])
     const [selected, setSelected] = useState([]);
+    const [pendingDelete, setPendingDelete] = useState(null);
 
     function handleUnauthorized() {
             localStorage.removeItem("deviceToken");
@@ -87,7 +88,7 @@ function DevicesPage({onBack}) {
                     <button
                         className="returnButton"
                         disabled={selected.length === 0}
-                        onClick={() => deleteDevices(selected)}
+                        onClick={() => setPendingDelete(selected)}
                     >
                         Delete selected ({selected.length})
                     </button>
@@ -115,7 +116,7 @@ function DevicesPage({onBack}) {
                             </div>
                             <button
                                 className="deleteButton"
-                                onClick={() => deleteDevices([device.id])}
+                                onClick={() => setPendingDelete([device.id])}
                             >
                                 Delete
                             </button>
@@ -123,6 +124,17 @@ function DevicesPage({onBack}) {
                     ))}
                 </div>
             </div>
+            {pendingDelete && (
+                <div className="popupOverlay">
+                    <div className="popup">
+                        <p>Delete {pendingDelete.length} device(s)?</p>
+                        <div className="popupButtonRow">
+                            <button className="popupCancelButton" onClick={() => setPendingDelete(null)}>Cancel</button>
+                            <button className="popupConfirmButton" onClick={() => { deleteDevices(pendingDelete); setPendingDelete(null); }}>Delete</button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

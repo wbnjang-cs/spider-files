@@ -7,6 +7,7 @@ function PairingPage({ onTokenReceived }) {
   const [code, setCode] = useState('');
   const [error, setError] = useState(null);
 
+
   async function submitCode(e) {
     e.preventDefault(); // stop the form from doing a full page reload
     setError(null);

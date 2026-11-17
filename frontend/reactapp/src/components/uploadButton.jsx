@@ -5,25 +5,6 @@ function UploadButton() {
   const fileInputRef = useRef(null);
   const [uploadResult, setUploadResult] = useState(null);
   const [showPopup, setShowPopup] = useState(false);
-  const [saveDir, setSaveDir] = useState(null);
-
-  useEffect(() => {
-    async function loadSaveDir() {
-      const response = await fetch(`${API_BASE}/config/getPath`, {
-        headers: { 'TOKEN_FOR_VERIFICATION': localStorage.getItem('deviceToken') },
-      });
-      if (response.status === 401) {
-        localStorage.removeItem('deviceToken');
-        window.location.reload();
-        return;
-      }
-      if (!response.ok) return;
-      const data = await response.json();
-      setSaveDir(data.savePath);
-    }
-    loadSaveDir();
-  }, []);
-
 
   function handleClick() {
     fileInputRef.current.click();
@@ -65,7 +46,6 @@ function UploadButton() {
 
   return (
     <>
-      {saveDir && <div className="currDirHeader saveDirText">Saving to: {saveDir}</div>}
       <button className="uploadButton" onClick={handleClick}>
         Upload File
       </button>

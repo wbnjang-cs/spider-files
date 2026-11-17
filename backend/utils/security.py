@@ -12,12 +12,21 @@ async def Verify_Token(inputedToken : Annotated[str, Depends(API_KEY_SCHEME)]):
         raise HTTPException(status_code=401, detail="Invalid or unpaired device.")
     return inputedToken
 
-def Show_Popup(code: str):
+def Show_Popup(code: str, closeEvent: threading.Event):
     root = tk.Tk()
     root.title("Pairing Code")
     root.attributes("-topmost", True)
 
     tk.Label(root, text=code, font=("Segoe UI", 40, "bold")).pack(padx=40, pady=40)
+
+
+    def CheckClose():
+        if closeEvent.is_set():
+            root.destroy()
+        else:
+            root.after(250, CheckClose)
+
+    root.after(250, CheckClose)
 
     root.after(CODE_VALID_FOR_SECONDS * 1000, root.destroy)
     root.mainloop()
@@ -32,6 +41,13 @@ START_SPAM_WINDOW_SECONDS = 10
 START_TIMES = []
 GUESS_STATE = {"wrong": 0, "locked_until": 0.0}
 STATE_LOCK = threading.Lock()
+POPUP_CLOSE = {"event": None}
+
+def Close_Popup():
+    # call only while holding STATE_LOCK
+    if POPUP_CLOSE["event"] is not None:
+        POPUP_CLOSE["event"].set()
+        POPUP_CLOSE["event"] = None
 
 def Start_Pairing():
     with STATE_LOCK:
@@ -43,13 +59,18 @@ def Start_Pairing():
             SetPairingEnabled(False)
             VALID_CODE["code"] = None
             START_TIMES.clear()
+            Close_Popup()
             raise HTTPException(status_code=403, detail="Pairing was turned off after too many requests. You can reenable pairing through the tray app.")
 
         code = f"{secrets.randbelow(1_000_000):06d}"
 
         VALID_CODE["code"] = code
+        GUESS_STATE["wrong"] = 0
         VALID_CODE["expires_at"] = time.time() + CODE_VALID_FOR_SECONDS
-        threading.Thread(target=Show_Popup, args=(code,), daemon=True).start()
+        Close_Popup()
+        closeEvent = threading.Event()
+        POPUP_CLOSE["event"] = closeEvent
+        threading.Thread(target=Show_Popup, args=(code, closeEvent), daemon=True).start()
 
 def Verify_Code(submitted: str) -> bool:
     with STATE_LOCK:
@@ -66,6 +87,7 @@ def Verify_Code(submitted: str) -> bool:
         valid = code is not None and time.time() < VALID_CODE["expires_at"] and secrets.compare_digest(code.encode(), submitted.encode())
         if valid:
             VALID_CODE["code"] = None
+            Close_Popup()
             GUESS_STATE["wrong"] = 0
         else:
             GUESS_STATE["wrong"] += 1

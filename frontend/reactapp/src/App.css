@@ -480,3 +480,29 @@
 .currDirHeader + .uploadButton {
     margin-top: 3vh;
 }
+
+button.saveDirText {
+    border: none;
+    cursor: pointer;
+    display: grid;
+    align-items: center;
+    justify-items: center;
+}
+
+.saveDirPath,
+.saveDirChange {
+    grid-area: 1 / 1;
+}
+
+.saveDirChange {
+    visibility: hidden;
+}
+
+@media (hover: hover) {
+    button.saveDirText:hover .saveDirPath {
+        visibility: hidden;
+    }
+    button.saveDirText:hover .saveDirChange {
+        visibility: visible;
+    }
+}
