@@ -2,7 +2,9 @@
 ; Keep this AppId the same forever so new versions upgrade the old install.
 AppId={{5FAC8F2D-2A8D-4904-B882-E770C8B05E7D}}
 AppName=Spider File
-AppVersion=1.2
+
+AppVersion=1.3
+
 DefaultDirName={autopf}\SpiderFile
 DefaultGroupName=Spider File
 OutputBaseFilename=SpiderFile-Setup
