@@ -30,7 +30,7 @@ Spider Files is a self-hosted, local file backup tool for Windows. Once you run 
 
 # Installation
 
-1. Download SpiderFiles-Setup.exe from the [Releases](https://github.com/wbnjang-cs/spider-files/releases/latest) page
+1. Download SpiderFile-Setup.exe from the [Releases](https://github.com/wbnjang-cs/spider-files/releases/latest) page
 
 2. Run the installer
 
@@ -41,11 +41,11 @@ Spider Files is a self-hosted, local file backup tool for Windows. Once you run 
 
 1. Right-click the Spider Files tray icon and select Show/Copy URL to get your PC's local address
    
-3. On your device (it MUST be on the same WiFi network), open that address in a browser
+2. On your device (it MUST be on the same WiFi network), open that address in a browser
 
-4. Tap Pair, then enter the one-time code shown in the popup on your PC
+3. Tap Pair, then enter the one-time code shown in the popup on your PC
 
-5. Once paired, use the File menu to upload from your phone or browse/download from your PC
+4. Once paired, use the File menu to upload from your phone or browse/download from your PC
    - Pairing can be disabled at any time from the tray icon menu if you don't want new devices to connect.
 
 # How It Works
@@ -56,7 +56,9 @@ Spider Files is a self-hosted, local file backup tool for Windows. Once you run 
   
 - Your device needs to pair before it can upload and download files from your computer (Reference Quick Start portion to learn how)
   
-- Uploaded files are kept track of, so duplicate files aren't stored twice
+- Uploaded files are kept track of, so duplicate files aren't stored twice.
+
+- Uploading two files with the same content or uploading two files with the same name to the same directory will be blocked.
 
 # Tech Stack
 
@@ -72,11 +74,21 @@ Spider Files is a self-hosted, local file backup tool for Windows. Once you run 
 
 - PC displays a 3-minute one-time code via a popup (/pair/start)
   
-- The connecting device submits the code (/pair); the server issues a per-device token and stores it in a devices table
+- The connecting device submits the code (/pair); the server issues a per-device token and stores it in a tokens table
   
 - All upload/download endpoints require a valid token; /pair/start and /pair are the only unauthenticated routes
   
 - Pairing can be toggled on/off from the tray menu and is persisted in config.json
+
+- You can manage all paired devices in the config menu
+
+## Security
+
+- More than 5 attempts to pair within 10 seconds will turn off pairing until it is turned back on in the tray app.
+  
+- Getting the pairing code wrong more than 5 times will lock you out of pairing for 60 seconds
+
+- Uploaded file names are sanitized and save paths are resolved so uploads cannot escape the chosen folder
 
 ## File Handling
 
